@@ -7,6 +7,9 @@ import math
 import undetected_chromedriver as uc
 from html import unescape
 import random
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 domain = "https://www.vocabulary.com"
 
@@ -32,6 +35,8 @@ def init_driver():
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
+    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    
     
     # Add X-Forwarded-For header
     # chrome_options.add_argument(f'--proxy-server=socks5://{random.choice(IPs)}:9999')
@@ -41,7 +46,7 @@ def init_driver():
 
     return driver
 
-def get_request(url, driver, save_path=None, wait=None):
+def get_request(url, driver, save_path=None, wait=None, wait_for_present=None):
     try:
         driver.get(url)
     except Exception as e:
@@ -65,6 +70,10 @@ def get_request(url, driver, save_path=None, wait=None):
     
     if wait:
         sleep(wait)
+    
+    if wait_for_present:
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_present)))
         
     # Parse HTML
     soup = BeautifulSoup(driver.page_source, "html.parser")
