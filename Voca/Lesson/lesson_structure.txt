@@ -1,0 +1,4 @@
+Base_dom: .wordlist
+
+- Lesson name: .wordlist .header h2 a  (text)
+- Lesson link: .wordlist .header h2 a  (href)
