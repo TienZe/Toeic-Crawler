@@ -44,7 +44,7 @@ def get_audio_url(driver):
             print("Clicked audio button")
             
             # Wait a moment for the request to be sent
-            time.sleep(0.2)
+            time.sleep(0.3)
             
             # Get performance logs
             logs = driver.get_log('performance')
@@ -63,10 +63,7 @@ def construct_dunno_search_url(word, lan):
 
 def crawl_dunno_word(word, driver):
     # en-en
-    soup_en = get_request(construct_dunno_search_url(word, "en"), driver=driver, wait_for_present=".item-content")
-
-    # wait = WebDriverWait(driver, 10)
-    # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, )))
+    soup_en = get_request(construct_dunno_search_url(word, "en"), driver=driver, wait_for_presence=".item-content")
     item_content_en = soup_en.select_one(".item-content")
 
     meaning_ele_en = item_content_en.select_one(".txt-mean")
@@ -77,8 +74,7 @@ def crawl_dunno_word(word, driver):
     part_of_speech = pos_ele.get_text(strip=True) if pos_ele else None
 
     # en-vi
-    soup = get_request(construct_dunno_search_url(word, "vi"), driver=driver, wait_for_present=".item-content")
-    # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".item-content")))
+    soup = get_request(construct_dunno_search_url(word, "vi"), driver=driver, wait_for_presence=".item-content")
     item_content = soup.select_one(".item-content")
 
     meaning_ele = item_content.select_one(".txt-mean")

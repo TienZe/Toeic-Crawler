@@ -46,7 +46,7 @@ def init_driver():
 
     return driver
 
-def get_request(url, driver, save_path=None, wait=None, wait_for_present=None):
+def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None):
     try:
         driver.get(url)
     except Exception as e:
@@ -71,9 +71,9 @@ def get_request(url, driver, save_path=None, wait=None, wait_for_present=None):
     if wait:
         sleep(wait)
     
-    if wait_for_present:
+    if wait_for_presence:
         wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_present)))
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_presence)))
         
     # Parse HTML
     soup = BeautifulSoup(driver.page_source, "html.parser")
