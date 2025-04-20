@@ -42,7 +42,7 @@ def init_driver():
     # chrome_options.add_argument(f'--proxy-server=socks5://{random.choice(IPs)}:9999')
     
     driver = uc.Chrome(options=chrome_options, user_multi_procs=True)
-    driver.set_page_load_timeout(10)
+    driver.set_page_load_timeout(25)
 
     return driver
 
@@ -83,4 +83,9 @@ def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None):
     
     return soup
 
+
+def split_df_into_chunks(df, total_chunk):
+    chunk_size = math.ceil(len(df) / total_chunk)
+    chunks = [df[i:i+chunk_size] for i in range(0, df.shape[0], chunk_size)]
     
+    return chunks

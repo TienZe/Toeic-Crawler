@@ -1,5 +1,5 @@
 from crawler_utils import *
-
+import pandas as pd
 
 def get_word_of_lesson(lesson_path, driver):
     lesson_url = get_url(lesson_path)
@@ -12,6 +12,32 @@ def get_word_of_lesson(lesson_path, driver):
         words.append(word)
         
     return words
+
+def get_and_save_words_of_lesson(lesson_chunk, output_path):
+    words = []
+    driver = init_driver()
+    
+    for i in range(len(lesson_chunk)):
+        lesson = lesson_chunk.iloc[i]
+        lesson_id = lesson['Lesson ID']
+        lesson_path = lesson['Lesson Link']
+        lesson_name = lesson['Lesson Name']
+        print(f'Getting words of {lesson_name} ({lesson_id})')
+        
+        try:
+            words_of_lesson = get_word_of_lesson(lesson_path, driver=driver)
+            for word in words_of_lesson:
+                words.append({
+                    'Word': word,
+                    'Lesson ID': lesson_id,
+                })
+        except Exception as e:
+            print(f'Error: {e}')
+
+    words_df = pd.DataFrame(words)
+    words_df.to_csv(output_path, index=False)
+    driver.quit()
+    
 
 if __name__ == "__main__":
     # Initialize the driver
