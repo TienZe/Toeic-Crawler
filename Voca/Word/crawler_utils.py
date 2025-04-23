@@ -72,8 +72,8 @@ def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None):
         sleep(wait)
     
     if wait_for_presence:
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_presence)))
+        wait_driver = WebDriverWait(driver, 10)
+        wait_driver.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_presence)))
         
     # Parse HTML
     soup = BeautifulSoup(driver.page_source, "html.parser")

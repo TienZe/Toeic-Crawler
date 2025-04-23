@@ -72,26 +72,29 @@ def get_audio_url(driver, get_example_audio=True):
         print(f"Error get audio url: {str(e)}")
         return None
 
-def construct_dunno_search_url(word, lan):
-    dunno_search_word_endpoint = "https://dunno.ai/search/word"
+def construct_zim_search_url(word):
+    dunno_search_word_endpoint = "https://dictionary.zim.vn/anh-viet/"
     
-    return f"{dunno_search_word_endpoint}/{word}?hl={lan}"
+    return f"{dunno_search_word_endpoint}/{word}"
 
 def crawl_dunno_word(word, driver):
-    # en-en
-    soup_en = get_request(construct_dunno_search_url(word, "en"), driver=driver, wait_for_presence=".item-content")
-    item_content_en = soup_en.select_one(".item-content")
+    # # en-en
+    # soup_en = get_request(construct_dunno_search_url(word, "en"), driver=driver, wait_for_presence=".item-content")
+    # item_content_en = soup_en.select_one(".item-content")
 
-    meaning_ele_en = item_content_en.select_one(".txt-mean")
-    meaning_en = meaning_ele_en.get_text(strip=True, separator=' ') if meaning_ele_en else None
-    definition = meaning_en
+    # meaning_ele_en = item_content_en.select_one(".txt-mean")
+    # meaning_en = meaning_ele_en.get_text(strip=True, separator=' ') if meaning_ele_en else None
+    # definition = meaning_en
 
-    pos_ele = soup_en.select_one(".box-content-title")
-    part_of_speech = pos_ele.get_text(strip=True) if pos_ele else None
+    # pos_ele = soup_en.select_one(".box-content-title")
+    # part_of_speech = pos_ele.get_text(strip=True) if pos_ele else None
 
     # en-vi
-    soup = get_request(construct_dunno_search_url(word, "vi"), driver=driver, wait_for_presence=".item-content")
+    soup = get_request(construct_zim_search_url(word), driver=driver, wait_for_presence=".inline-block.w-full.text-primary.text-base-rps")
     
+    return {
+        "word": word,
+    }
     item_content = soup.select_one(".item-content")
 
     meaning_ele = item_content.select_one(".txt-mean")
