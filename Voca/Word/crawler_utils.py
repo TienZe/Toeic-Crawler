@@ -106,3 +106,8 @@ def save_chunks(chunks, output_dir):
         
         chunk.to_csv(output_path, index=False)
         print(f"Saved chunk {index} to {output_path}")
+        
+
+def beep():
+    # play sound beep
+    os.system('afplay /System/Library/Sounds/Glass.aiff')

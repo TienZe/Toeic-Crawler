@@ -14,8 +14,18 @@ def construct_url(word):
 
 def crawl_glosbe_word(word, driver):
     wait = WebDriverWait(driver, 6)
-    get_request(construct_url(word), driver=driver, wait_for_presence="#dictionary-content", to_soup=False)
     
+    try:
+        get_request(construct_url(word), driver=driver, wait_for_presence="#dictionary-content", to_soup=False)
+    except Exception as e:
+        if driver.page_source and "Glosbe is intended to provide it's service to humans, not internet robots." in driver.page_source:
+            print("Please resolve the human test. Sleep 60 seconds and try again")
+            beep()
+        
+        sleep(60)
+        # Try again
+        return crawl_glosbe_word(word, driver)
+            
     sleep(3)
     
     # Do first first interaction on the page to trigger other event handler in the page
