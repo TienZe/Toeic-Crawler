@@ -6,7 +6,7 @@ from multiprocessing import Process
 import math
 import undetected_chromedriver as uc
 from html import unescape
-import random
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -35,7 +35,7 @@ def init_driver():
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration
-    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    # chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     
     
     # Add X-Forwarded-For header
@@ -46,7 +46,7 @@ def init_driver():
 
     return driver
 
-def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None):
+def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None, to_soup=True):
     try:
         driver.get(url)
     except Exception as e:
@@ -76,16 +76,33 @@ def get_request(url, driver, save_path=None, wait=None, wait_for_presence=None):
         wait_driver.until(EC.presence_of_element_located((By.CSS_SELECTOR, wait_for_presence)))
         
     # Parse HTML
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    if save_path:
-        with open(save_path, "w", encoding='utf-8') as f:
-            f.write(soup.prettify())
+    if to_soup:
+        soup = page_source_2_soup(driver.page_source)
+        
+        if save_path:
+            with open(save_path, "w", encoding='utf-8') as f:
+                f.write(soup.prettify())
+                
+        return soup
     
-    return soup
-
-
+    return driver
+    
 def split_df_into_chunks(df, total_chunk):
     chunk_size = math.ceil(len(df) / total_chunk)
     chunks = [df[i:i+chunk_size] for i in range(0, df.shape[0], chunk_size)]
     
     return chunks
+
+
+def page_source_2_soup(page_source):
+    soup = BeautifulSoup(page_source, "html.parser")
+    return soup
+
+def save_chunks(chunks, output_dir):
+    for index, chunk in enumerate(chunks):
+        # Create the directory if it doesn't exist
+        os.makedirs(f"{output_dir}/{index}", exist_ok=True)
+        output_path = f"{output_dir}/{index}/input.csv"
+        
+        chunk.to_csv(output_path, index=False)
+        print(f"Saved chunk {index} to {output_path}")
