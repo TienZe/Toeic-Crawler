@@ -1,3 +1,5 @@
+SET NAMES utf8mb4;
+
 INSERT INTO collections (id, name, description, book_purchase_link, thumbnail, thumbnail_public_id, created_at)
 VALUES (
     1,
